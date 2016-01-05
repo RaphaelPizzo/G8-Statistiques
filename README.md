@@ -20,3 +20,15 @@ Enfin, le choix des supports permettant d’illustrer les différentes études (
 
 
 ## Travail préparatoire
+
+
+# Nouvelles "fausses" données
+
+Nous avons modifié le script insertions.py et ajouté des fichiers .csv afin de peupler un peu plus la base.
+Pour insérer les données dans votre base : 
+- Télécharger le dossier "data" et le mettre à la place de vos données actuellement. 
+- Télécharger le fichier "insertions.py" et le lancer depuis le shell.
+
+ATTENTION !! Pour l'instant le fichier "insertions.py" ne supprime pas toutes les données déjà insérées dans vos tables. Donc si vous voulez le relancer une deuxième fois, il faut supprimer puis recréer la BD.
+
+Si vous avez des questions n'hésitez pas à venir nous voir (salle U4-208).
