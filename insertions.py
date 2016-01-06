@@ -1,6 +1,3 @@
-from scipy.spatial import Voronoi
-import shapely.geometry
-import shapely.ops
 import pandas as pd
 from datetime import datetime
 from app import db
@@ -20,7 +17,7 @@ modeles.Adresse.query.delete()
 
 def inserer_adresse(ligne):
     adresse = modeles.Adresse(
-        adresse=ligne['adresse'],
+        nom_rue=ligne['nom_rue'],
         numero=ligne['numero'],
         cp=ligne['cp'],
         ville=ligne['ville'],
@@ -31,39 +28,9 @@ def inserer_adresse(ligne):
 
 # On remet à neuf la clé qui s'auto-incrémente
 db.session.execute('TRUNCATE TABLE adresses RESTART IDENTITY CASCADE;')
-adresses = pd.read_csv('data/adresses.csv', encoding='utf8')
+adresses = pd.read_csv('app/data/adresses.csv', encoding='utf8')
 adresses.apply(inserer_adresse, axis=1)
 
-############################
-### Secteurs et stations ###
-############################
-
-secteurs = pd.read_csv('data/secteurs.csv')
-vor = Voronoi(secteurs[['lat', 'lon']])
-# On récupère les polygones qui ne s'étendent pas à l'infini
-lines = [
-    shapely.geometry.LineString(vor.vertices[line])
-    for line in vor.ridge_vertices
-    if -1 not in line
-]
-# Pequeno problemo a resolvar manana
-for i, polygone in enumerate(shapely.ops.polygonize(lines)):
-    # Insertion d'un secteur
-    secteur = modeles.Secteur(
-        nom=secteurs['nom'][i],
-        surface=polygone.to_wkt()
-    )
-    db.session.add(secteur)
-    db.session.commit()
-    # Insertion de la station correspondante
-    station = modeles.Station(
-        nom=secteurs['nom'][i],
-        adresse=i+1,
-        distance=200,
-        secteur=secteurs['nom'][i]
-    )
-    db.session.add(station)
-    db.session.commit()
 
 ####################
 ### Utilisateurs ###
@@ -74,7 +41,7 @@ def inserer_utilisateur(ligne):
         prenom=ligne['prenom'].lower().capitalize(),
         nom=ligne['nom'].lower().capitalize(),
         email=ligne['email'],
-        telephone=ligne['telephone'],
+        telephone=str(ligne['telephone']),
         categorie=ligne['categorie'],
         confirmation=True,
         notification_sms=True,
@@ -86,7 +53,7 @@ def inserer_utilisateur(ligne):
     db.session.add(utilisateur)
     db.session.commit()
 
-utilisateurs = pd.read_csv('data/utilisateurs.csv')
+utilisateurs = pd.read_csv('app/data/utilisateurs.csv')
 utilisateurs.apply(inserer_utilisateur, axis=1)
 
 ################################
@@ -101,14 +68,14 @@ def inserer_vehicule_conducteur(ligne):
         marque=ligne['marque']
     )
     conducteur = modeles.Conducteur(
-        telephone=ligne['telephone'],
+        telephone=str(ligne['telephone']),
         email=ligne['email'],
         prenom=ligne['prenom'],
         nom=ligne['nom'],
         libre=True,
-        station=ligne['station'],
+        #station=ligne['station'],
         position='POINT({0} {1})'.format(ligne['lat'], ligne['lon']),
-        adresse=i+1,
+        adresse=1,
         inscription=datetime.utcnow()
     )
     db.session.add(vehicule)
@@ -118,8 +85,8 @@ def inserer_vehicule_conducteur(ligne):
     vehicule.conducteur = conducteur.telephone
     db.session.commit()
 
-vehicules = pd.read_csv('data/vehicules.csv')
-conducteurs = pd.read_csv('data/conducteurs.csv')
+vehicules = pd.read_csv('app/data/vehicules.csv')
+conducteurs = pd.read_csv('app/data/conducteurs.csv')
 data = pd.concat([vehicules, conducteurs], axis=1)
 data.apply(inserer_vehicule_conducteur, axis=1)
 
@@ -129,8 +96,8 @@ data.apply(inserer_vehicule_conducteur, axis=1)
 
 def inserer_course(ligne):
 	course = modeles.Course(
-		utilisateur=ligne['utilisateur'],
-		conducteur=ligne['conducteur'],
+		utilisateur=str(ligne['utilisateur']),
+		conducteur=str(ligne['conducteur']),
 		finie=True,
 		places=ligne['places'],
 		priorite=ligne['priorite'],
@@ -145,7 +112,7 @@ def inserer_course(ligne):
 	db.session.commit()
 
 db.session.execute('TRUNCATE TABLE courses RESTART IDENTITY CASCADE;')
-courses = pd.read_csv('data/courses.csv')
+courses = pd.read_csv('app/data/courses.csv')
 courses.apply(inserer_course, axis=1)
 
 
@@ -166,7 +133,25 @@ def inserer_facture(ligne):
 	db.session.commit()
 
 db.session.execute('TRUNCATE TABLE factures RESTART IDENTITY CASCADE;')
-factures = pd.read_csv('data/factures.csv')
+factures = pd.read_csv('app/data/factures.csv')
 factures.apply(inserer_facture, axis=1)
+
+########################################
+############# Positions ################
+########################################
+
+def inserer_position(ligne):
+	position = modeles.Positions(
+		conducteur=str(ligne['conducteur']),
+		moment=ligne['moment'],
+		positions='POINT({0} {1})'.format(ligne['lat'], ligne['lon']),
+	)
+	db.session.add(position)
+	db.session.commit()
+
+positions = pd.read_csv('app/data/positions.csv')
+positions.apply(inserer_position, axis=1)
+		
+
 
 
