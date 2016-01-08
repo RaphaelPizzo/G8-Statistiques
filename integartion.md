@@ -6,3 +6,7 @@
 ##Modification du 07 janvier, 16h50
 
 - Modification des fichiers courses.csv, factures.csv et positions.csv pour plus de cohérences
+
+##Modification du 08 janvier 14h20
+
+- Modification de insertions.py et ajout de etapes.csv
