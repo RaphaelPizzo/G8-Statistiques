@@ -10,3 +10,7 @@
 ##Modification du 08 janvier 14h20
 
 - Modification de insertions.py et ajout de etapes.csv
+- 
+##Modification du 11 janvier 16h
+
+-Ajout données dans propositions.csv
