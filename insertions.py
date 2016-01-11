@@ -5,8 +5,10 @@ from app import modeles
 import random
 
 # On vide les tables dans un ordre logique
+modeles.Message.query.delete()
 modeles.Facture.query.delete()
 modeles.Etape.query.delete()
+modeles.Proposition.query.delete()
 modeles.Course.query.delete()
 modeles.Vehicule.query.delete()
 modeles.Etape.query.delete()
@@ -40,6 +42,7 @@ adresses.apply(inserer_adresse, axis=1)
 
 print('Adresses insérées.')
 
+
 ####################
 ### Utilisateurs ###
 ####################
@@ -50,7 +53,6 @@ def inserer_utilisateur(ligne):
         nom=ligne['nom'].lower().capitalize(),
         email=ligne['email'],
         telephone=str(ligne['telephone']),
-        categorie=ligne['categorie'],
         confirmation=True,
         notification_sms=True,
         notification_email=True,
@@ -73,7 +75,7 @@ print('Utilisateurs insérés.')
 def inserer_station(ligne):
     station = modeles.Station(
         nom=ligne['nom'],
-        adresse=random.randint(1, len(adresses)),
+        adresse=ligne['adresse'],
         distance_entree=ligne['entree'],
         distance_sortie=ligne['sortie']
     )
@@ -135,7 +137,6 @@ def inserer_course(ligne):
 		priorite=ligne['priorite'],
 		debut=ligne['debut'],
 		fin=ligne['fin'],
-		retour= False,
 		commentaire=ligne['commentaire'],
 		depart=ligne['depart'],
 		arrivee=ligne['arrivee'],
@@ -179,7 +180,7 @@ def inserer_position(ligne):
     position = modeles.Position(
         conducteur=str(ligne['conducteur']),
         moment=ligne['moment'],
-        positions='POINT({0} {1})'.format(ligne['lat'], ligne['lon']),
+        position='POINT({0} {1})'.format(ligne['lat'], ligne['lon']),
     )
     db.session.add(position)
     db.session.commit()
@@ -190,7 +191,7 @@ positions.apply(inserer_position, axis=1)
 print('Positions insérées.')
 
 ########################################
-############# Etapes ################
+############### Etapes #################
 ########################################
 
 def inserer_etape(ligne):
@@ -206,3 +207,45 @@ etapes = pd.read_csv('app/data/etapes.csv')
 etapes.apply(inserer_etape, axis=1)
 
 print('Etapes insérées.')
+
+####################################
+########### Propositions ###########
+####################################
+
+def inserer_proposition(ligne):
+    prop = modeles.Proposition(
+        iteration = ligne['iteration'],
+        course = ligne['course'],
+        conducteur = str(ligne ['conducteur']),
+        proposition = ligne['proposition'],
+        reponse = ligne ['reponse'],
+        statut = str(ligne ['statut']),
+        raison = str(ligne ['raison']),
+        ordre = ligne ['ordre']
+    )
+    
+    db.session.add(prop)
+    db.session.commit() 
+
+propositions = pd.read_csv('app/data/propositions.csv', encoding='utf8')
+propositions.apply(inserer_proposition, axis=1)
+
+print('Propositions insérées.')
+
+########################################
+############# Messages #################
+########################################
+
+def inserer_message(ligne):
+    message = modeles.Message(
+        conducteur=str(ligne['conducteur']),
+        moment=ligne['moment'],
+        sujet=ligne['sujet'],
+    )
+    db.session.add(message)
+    db.session.commit()
+
+messages = pd.read_csv('app/data/messages.csv')
+messages.apply(inserer_message, axis=1)
+
+print('Messages insérés.')
