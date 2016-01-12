@@ -18,3 +18,7 @@
 ##Modification du 12 janvier 13h20
 
 -Ajout de données dans factures.csv
+
+##Modification du 12 janvier 15h25
+
+-Modificiation de insertions.py et du fichier courses.csv pour ajouter des distances estimées
