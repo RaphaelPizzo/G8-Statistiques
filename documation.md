@@ -14,16 +14,16 @@ Une fois que l’application aura une adresse fixe, ce problème sera résolu.
 
 ##Description de l’application
 Pour  l’instant l’application est composée de 5 onglets eux-mêmes comportant différents indicateurs :
-- Conducteurs
--- Une carte affichant les trajets d’un conducteur sélectionné. 
-- Client
--- Carte donnant la position des clients
-- Stations
--- Carte affichant les stations avec leurs rayons d’action accompagnée d’un code couleur en fonction des taxis rattachées aux stations.
-- Courses
--- Carte affichant les trajets des courses (sélectionnable en fonction du conducteur, puis du numéro de la course)
-- Factures
--- Graphiques sur chiffre d’affaire ou encore le nombre de courses
+* Conducteurs
+    * Une carte affichant les trajets d’un conducteur sélectionné. 
+* Client
+    * Carte donnant la position des clients
+* Stations
+    * Carte affichant les stations avec leurs rayons d’action accompagnée d’un code couleur en fonction des taxis rattachées aux stations.
+* Courses
+    * Carte affichant les trajets des courses (sélectionnable en fonction du conducteur, puis du numéro de la course)
+* Factures
+    * Graphiques sur chiffre d’affaire ou encore le nombre de courses
 	
 	
 ##Utilisation
